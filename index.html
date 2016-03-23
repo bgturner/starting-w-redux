@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Minimal Redux</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>
+	<script>
+
+// Reducer - Note: This is the **only** thing that can deal with the store. The action 'describes' what
+// needs to happen, but this -- the reducer -- is the thing that actually carries out the action.
+// Note also that each action has a 'type' property.
+const counter = (state = 0, action) => {
+	switch (action.type) {
+		case 'INCREMENT':
+			return state + 1;
+		case 'DECREMENT':
+			return state - 1;
+		default:
+			return state;
+	}
+}
+
+const { createStore } = Redux; // es6 syntax, equivalent to:
+// var createStore = Redux.createStore;
+// import { createStore } from 'redux'; // ie npm module or something
+
+// Holds state of app, and binds the 'counter' reducer to this store
+const store = createStore(counter);
+
+// Three methods on store: 'getState' 'dispatch' 'subscribe'
+
+console.log(store.getState()); // shows 0 in console because state just beginning
+
+store.dispatch({ type: 'INCREMENT' }); // Fire some action
+console.log(store.getState());
+// Will be 1 since we have dispatched the 'INCREMENT' action
+
+// We can also 'subscribe' which basically means we are watching for changes to
+// the store and doing something accordingly.
+// We are registering a callback that updates the UI in reaction to the changed
+// app state. Note that at this point in the app, '2' will be output to the screen
+// because we have the previous commands that were only outputting to the console
+store.subscribe(() => {
+ document.body.innerText = store.getState();
+});
+
+// Add a basic event listener so we can fire the 'INCREMENT' action
+document.addEventListener('click', () => {
+	store.dispatch({ type: 'INCREMENT' });
+});
+
+// We could additionally refactore the above into a render function which we call on the
+// initial state of our application:
+const render = () => {
+ document.body.innerText = store.getState();
+};
+
+// store.subscribe(render);
+// Listens for changes to store and fires 'render'
+// render();
+// Renders on the start of the app
+
+	</script>
+</head>
+<body>
+</body>
+</html>
